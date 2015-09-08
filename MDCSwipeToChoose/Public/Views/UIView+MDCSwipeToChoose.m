@@ -47,6 +47,20 @@ const void * const MDCViewStateKey = &MDCViewStateKey;
 - (void)mdc_swipe:(MDCSwipeDirection)direction {
     [self mdc_swipeToChooseSetupIfNecessary];
 
+    /**
+     *  BUG:
+     *      When swippeable view uses offset for X - axis, and method
+     *
+     *          - (void)mdc_swip
+     *
+     *      is called programatically, method
+     *
+     *          - (void)view:(UIView *)view wasChosenWithDirection:(MDCSwipeDirection)direction
+     *
+     *      will be called only every second time the former method is called.
+     */
+    self.mdc_viewState.originalCenter = self.center;
+
     // A swipe in no particular direction "finalizes" the swipe.
     if (direction == MDCSwipeDirectionNone) {
         [self mdc_finalizePosition];
